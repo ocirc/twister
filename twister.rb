@@ -31,8 +31,8 @@ s.atoms.each {|a|
 myatoms.each {|serial, xyz|
 	myatoms[serial]=Coords.new(xyz.x/2,xyz.y*2,xyz.z/2)
 	}
-puts myatoms.inspect
-# c] zapisywanie pdb
+#puts myatoms.inspect
+#modyfikacja (#tmp)
 myatoms.each {|serial, xyz|
 	s.atoms.each {|a|
 		if serial==a.serial
@@ -42,10 +42,21 @@ myatoms.each {|serial, xyz|
 		}
 	}
 # > tutaj jest juz zaktualizowana struktura
-File.open('out.pdb', 'w').write(s.to_s)
+# c] zapisywanie pdb
+class Bio::PDB
+	def sv(fname)
+		File.open(fname, 'w').write(self.to_s)
+		puts "Saved struct to %s."%fname
+	end
+end
+
+s.sv('out.pdb')
+
 
 # d] wizualizacja (pymol non-iteractive, albo znaleŸæ inny renderer pdb)
+#hop
 # e] transformacja do wspó³rzêdnych pó³polarnych (r=x^2+z^2; a=atan(z/x))
+
 #f] obrót wszystkiego o jednakowy k¹t
 #g] normalizacja wspó³rzêdnych Y (koniec_A = 1.0, koniec_B=-1.0; 0 w œrodku odleg³oœci, |y_cor|>1.0 dla atomów dalszych ni¿ koñce)
 #h] obrót o k¹t zale¿ny od y_cor (w³aœciwa transformacja)
