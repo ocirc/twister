@@ -1,0 +1,45 @@
+Dane wejściowe: plik PDB zawierający m.in. dsDNA, kąt rozkręcenia
+Założenie o cylindryczności: DNA NIE JEST ZGIĘTE; oś obrotu to prosta łącząca środki odcinków zbudowanych na końcach 5' i 3' (atomy P)
+* rozszerzenie: wybieranie prostych odcinków, złożenie rotacji
+======================= uwaga ========================
+= To może być całkiem niezła metoda - dla DNA o N bp =
+= złożenie N-1 rotacji + korekta pozycji reszty      =
+= centralnej = niezależność od ugięcia DNA!          =
+======================================================
+
+
+1) wybór osi obrotu
+2) wertykalizacja osi Y, zapamiętane kąty obrotu posłużą do transformacji odrwotnej
+3) przejście do układu polarno-kartezjańskiego (xz-y)
+4) obrót składowej polarnej (kąt zależny od składowej y)
+5) powrót do układu kartezjańskiego 
+6) pochylenie Y
+
+alternatywa: operacje macierzowe (problematyczne - zmienny kąt obrotu)
+
+1) konwersja danych
+pdb <-> współrzędne
+2) transformacje geometryczne
+współrzędne + kąt -> współrzędne rozkręcone
+3) minimalizacja energii?
+
+~ ~ ~ ~ ~ ~ plan pracy ~ ~ ~ ~ ~ ~  
+0] przygotowanie git/svn
+
+a] 4pts.pdb	# 4 atomy wokół pionowej osi
+b] wczytywanie pdb i wypisywanie współrzędnych
+c] zapisywanie pdb
+d] wizualizacja (pymol non-iteractive, albo znaleźć inny renderer pdb)
+e] transformacja do współrzędnych półpolarnych (r=x^2+z^2; a=atan(z/x))
+f] obrót wszystkiego o jednakowy kąt
+g] normalizacja współrzędnych Y (koniec_A = 1.0, koniec_B=-1.0; 0 w środku odległości, |y_cor|>1.0 dla atomów dalszych niż końce)
+h] obrót o kąt zależny od y_cor (właściwa transformacja)
+ ] <MATEMATYKA: jaki typ funkcji przejścia (kąt(y_cor)) będzie najlepszy (liniowy, exp, tan, x^3,...?)>
+i] odnajdywanie osi
+j] normalizacja i denormalizacja Y
+
+
+
+
+
+
