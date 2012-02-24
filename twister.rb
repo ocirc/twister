@@ -78,6 +78,28 @@ s.atoms.each {|a|
 	atoms1[a.serial]=Coords.new(a.x, a.y, a.z)
 	}
 
+# zbieramy atomy do wyznaczania prostych
+aa1=s[nil]['A']['1']['C4\'']
+aa2=s[nil]['A']['20']['C4\'']
+
+ab1=s[nil]['B']['21']['C4\'']
+ab2=s[nil]['B']['40']['C4\'']
+
+a1=Matrix.column_vector([aa1.x,aa1.y,aa1.z])
+a2=Matrix.column_vector([aa2.x,aa2.y,aa2.z])
+b1=Matrix.column_vector([ab1.x,ab1.y,ab1.z])
+b2=Matrix.column_vector([ab2.x,ab2.y,ab2.z])
+
+m1=(a1+a2)/2
+m2=(b1+b2)/2
+mm=(m1+m2)/2
+[a1,a2,b1,b2,m1].each do |v| 
+	puts vec2str(v)
+	end
+exit
+
+
+	
 #puts atoms1.inspect	#prints structure (lista tez)
 
 # wprowadzenie zmian
@@ -136,10 +158,9 @@ end
 #atoms2=rotateAtoms(atoms1,options[:a]*Math::PI/180.0)
 #s.updateatoms(atoms2)
 #s.sv(options[:o])
-a=Matrix.column_vector([1,1,1])
-b=Matrix.column_vector([0,1,0])
-puts rotmatrix(a,5)
 
+#puts s.atoms.inspect
+#puts s.atoms.search {|a| a["name"]=='C4' && a["resSeq"]==1}
 
 #g] normalizacja wspó³rzêdnych Y (koniec_A = 1.0, koniec_B=-1.0; 0 w œrodku odleg³oœci, |y_cor|>1.0 dla atomów dalszych ni¿ koñce)
 #h] obrót o k¹t zale¿ny od y_cor (w³aœciwa transformacja)

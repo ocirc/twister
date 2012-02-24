@@ -1,0 +1,6 @@
+distance d1, resi 1 and name c4', resi 20 and name c4'
+distance d1, resi 1 and name c4', resi 21 and name c4'
+distance d1, resi 40 and name c4', resi 20 and name c4'
+distance d1, resi 40 and name c4', resi 21 and name c4'
+pseudoatom aa, pos=[0,0,0]
+show spheres,name aa

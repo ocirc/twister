@@ -1,4 +1,5 @@
 require 'matrix'
+require 'pp'
 
 #a=Matrix.column_vector([1,1,1])
 #b=Matrix.column_vector([0,1,0])
@@ -9,6 +10,15 @@ require 'matrix'
 
 def cveclen(u)
 	Math.sqrt(u[0,0]**2+u[1,0]**2+u[2,0]**2)
+end
+
+def vec2str(u)
+	"vec(%.3f,%.3f,%.3f)" % [u[0,0],u[1,0],u[2,0]]
+end 
+class Matrix
+	def pprint
+		PP.pp self
+	end
 end
 
 def rotmatrix(u_in,ang)
@@ -30,14 +40,14 @@ end
 
 def cprod(a,b)
 	Matrix.column_vector([
-	a[2,0]*b[3,0]-a[3,0]*b[2,0],
-	a[1,0]*b[3,0]-a[3,0]*b[1,0],
-	a[1,0]*b[2,0]-a[2,0]*b[1,0]
+	a[1,0]*b[2,0]-a[2,0]*b[1,0],
+	a[0,0]*b[2,0]-a[2,0]*b[0,0],
+	a[0,0]*b[1,0]-a[1,0]*b[0,0]
 	])
 end
 
 def dprod(a,b)
-	a[1,0]*b[1,0] + a[2,0]*b[2,0] + a[3,0]*b[3,0]
+	a[0,0]*b[0,0] + a[1,0]*b[1,0] + a[2,0]*b[2,0]
 end
 
 #m=rotmatrix(y, 90*Math::PI/180.0)

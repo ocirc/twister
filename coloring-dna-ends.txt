@@ -1,0 +1,9 @@
+color gray
+show spheres,name c4' and resi 1
+show spheres,name c4' and resi 20
+show spheres,name c4' and resi 21
+show spheres,name c4' and resi 40
+color red,name c4' and resi 1
+color green,name c4' and resi 20
+color blue,name c4' and resi 21
+color yellow,name c4' and resi 40
