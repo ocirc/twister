@@ -104,6 +104,10 @@ puts "Znorm. wektor kierunkowy DNA: " + vec2str(dir)
 yaxis=Matrix.column_vector([0,1,0])
 if dir==yaxis
 	puts "Wektor zgodny z osia OY... O_o nic nie obracam"
+	atoms3={}
+	atoms2.each do |serial,xyz|
+		atoms3[serial] = xyz
+	end
 else
 	puts "[Obliczanie osi obrotu do korekty Y (il. wektorowy z [010])]"
 	rotaxis=cprod(dir,yaxis)
@@ -127,10 +131,28 @@ else
 		atoms3[serial] = m_rot*xyz
 	end
 	puts "Obrocono."
+	
+	puts "Oblicznie globalnej macierzy obrotu wokol y"
+	m_rot_y=rotmatrix(yaxis, options[:a]*Math::PI/180.0)
+	puts m_rot_y
+	puts "macierz obrotu Y"
+	
+	puts "Obrot wokol y"
+	atoms4={}
+	atoms3.each do |serial,xyz|
+		atoms4[serial] = m_rot_y*xyz
+	end
+
+	s.updateatoms(atoms4)
+	s.sv(options[:o])
+
+	exit
+end
+
 
 	
-end
-exit
+#rotacja o zadany kat - inny dla kazdego atomu
+
 # wyznaczanie osi obrotu (cross-product, chcemy obrocic sie na os y)
 # wyznaczanie kata obrotu (dot-product)
 

@@ -1,0 +1,12 @@
+twister1.rb -i _igh.pdb -o roty0.pdb -a 0
+twister1.rb -i _igh.pdb -o roty30.pdb -a 30
+twister1.rb -i _igh.pdb -o roty60.pdb -a 60
+twister1.rb -i _igh.pdb -o roty90.pdb -a 90
+twister1.rb -i _igh.pdb -o roty120.pdb -a 120
+twister1.rb -i _igh.pdb -o roty150.pdb -a 150
+twister1.rb -i _igh.pdb -o roty180.pdb -a 180
+twister1.rb -i _igh.pdb -o roty210.pdb -a 210
+twister1.rb -i _igh.pdb -o roty240.pdb -a 240
+twister1.rb -i _igh.pdb -o roty270.pdb -a 270
+twister1.rb -i _igh.pdb -o roty300.pdb -a 300
+twister1.rb -i _igh.pdb -o roty330.pdb -a 330

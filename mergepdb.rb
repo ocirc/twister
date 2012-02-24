@@ -1,5 +1,5 @@
 #mergepdb
-filenames=Dir.glob("out*.pdb")
+filenames=Dir.glob("roty*.pdb")
 #puts files
 fo=File.new("merge.pdb", 'w')
 i=0
