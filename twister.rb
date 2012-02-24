@@ -1,7 +1,9 @@
 #OK a] 4pts.pdb	# 4 atomy wokó³ pionowej osi
 # b] wczytywanie pdb i wypisywanie wspó³rzêdnych
 require "bio"
-s=Bio::PDB.new(File.new('4pts.pdb').gets(nil))
+require "optparse"
+require "./rotmatrix.rb"
+
 class Coords
 	attr_accessor :x, :y, :z
 	def initialize(x,y,z)
@@ -10,7 +12,18 @@ class Coords
 	def to_s
 	  "(%.3f, %.3f, %.3f)" % [x,y,z]
 	end
+	# przenosi os swobodna z Y na Z (i z powrotem)
+	def switchYZ
+		@y,@z=@z,@y
+		return self
+	end
+	def switchYX
+		@y,@x=@x,@y
+		return self
+	end
+	
 	def to_polar
+		# atan2 bierze pod uwage cwiartke ukladu wspolrzednych
 		Cpolar.new(Math.sqrt(x**2+z**2), Math.atan2(z,x), y)
 	end
 end
@@ -24,7 +37,7 @@ class Cpolar
 	  "<%.3f, %.3f, %.3f>" % [r,ang,y]
 	end
 	def to_coords
-		Coords.new(Math.cos(ang)*r,y,Math.sin(ang)*r)
+		Coords.new(Math.cos(ang)*r, y, Math.sin(ang)*r)
 	end
 end
 #c=Coords.new(1,2,3)
@@ -34,6 +47,31 @@ end
 
 #c=coords.new(1,2,3)
 #puts c.to_s
+USEINFO=!true
+
+def info(msg)
+	puts msg if USEINFO
+end
+
+options = {}
+OptionParser.new do |opts|
+	options[:i] = "4pts.pdb"
+	options[:a] = 0.0
+	options[:o] = "out.pdb"
+	
+	opts.on( '-i [%s]' % options[:i], "input pdb file") do |s|
+		options[:i] = s
+	end
+	opts.on( '-a [%s]' % options[:a], "angle, deg") do |a|
+		options[:a] = Float(a) #rescue 0.0
+	end
+	opts.on( '-o [%s]' % options[:o], "output pdb file") do |o|
+		options[:o] = o
+	end
+end.parse!
+
+info "[*] Using file '%s' as input."%options[:i]
+s=Bio::PDB.new(File.new(options[:i]).gets(nil))
 
 atoms1={}
 s.atoms.each {|a|
@@ -72,32 +110,36 @@ end
 
 # d] wizualizacja (pymol non-iteractive, albo znaleŸæ inny renderer pdb)
 #hop
-# e] transformacja do wspó³rzêdnych pó³polarnych (r=x^2+z^2; a=atan(z/x))
-def rotateAtoms(myatoms, angle)
-	mypolar={}
+def switchYX(myatoms)
 	myatoms.each {|serial, xyz|
-		x,y,z=xyz.x,xyz.y,xyz.z
-		# atan2 bierze pod uwage cwiartke ukladu wspolrzednych
-		mypolar[serial]=Cpolar.new(Math.sqrt(x**2+z**2), Math.atan2(z,x), y)
+		xyz.switchYX
 		}
-	#f] obrót wszystkiego o jednakowy k¹t
-	mypolar.each {|serial, crds|
-		crds.ang+=angle
-		mypolar[serial]=crds
-		}
-	puts mypolar
-	# transformacja powrotna
-	myatoms2={}
-	mypolar.each {|serial, crds|
-		z=Math.sin(crds.ang)*crds.r
-		x=Math.cos(crds.ang)*crds.r
-		myatoms2[serial]=Coords.new(x,crds.y,z)
-		}
-	return myatoms2
+	return myatoms
 end
 
-s.updateatoms(myatoms2)
-s.sv('out.pdb')
+
+def rotateAtoms(myatoms, angle)
+	# e] transformacja do wspó³rzêdnych pó³polarnych (r=x^2+z^2; a=atan(z/x))
+	# f] obrót wszystkiego o jednakowy k¹t
+	#  ] transformacja powrotna
+	
+	myatoms.each {|serial, xyz|
+		pol=xyz.to_polar
+		pol.ang+=angle
+		xyz1=pol.to_coords
+		myatoms[serial]=xyz1
+		}
+	return myatoms
+end
+
+
+#atoms2=rotateAtoms(atoms1,options[:a]*Math::PI/180.0)
+#s.updateatoms(atoms2)
+#s.sv(options[:o])
+a=Matrix.column_vector([1,1,1])
+b=Matrix.column_vector([0,1,0])
+puts rotmatrix(a,5)
+
 
 #g] normalizacja wspó³rzêdnych Y (koniec_A = 1.0, koniec_B=-1.0; 0 w œrodku odleg³oœci, |y_cor|>1.0 dla atomów dalszych ni¿ koñce)
 #h] obrót o k¹t zale¿ny od y_cor (w³aœciwa transformacja)
