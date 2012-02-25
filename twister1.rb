@@ -102,6 +102,8 @@ dir=(tm1-tm2)
 dir=dir/cveclen(dir)	#normalizacja
 puts "Znorm. wektor kierunkowy DNA: " + vec2str(dir)
 yaxis=Matrix.column_vector([0,1,0])
+atoms3={}
+m_unrot=nil
 if dir==yaxis
 	puts "Wektor zgodny z osia OY... O_o nic nie obracam"
 	atoms3={}
@@ -131,33 +133,40 @@ else
 		atoms3[serial] = m_rot*xyz
 	end
 	puts "Obrocono."
-	
-	puts "Oblicznie globalnej macierzy obrotu wokol y"
-	m_rot_y=rotmatrix(yaxis, options[:a]*Math::PI/180.0)
-	puts m_rot_y
-	puts "macierz obrotu Y"
-	
-	puts "Obrot wokol y"
-	atoms4={}
-	atoms3.each do |serial,xyz|
-		atoms4[serial] = m_rot_y*xyz
-	end
+end
+puts "Wyznaczanie znormalizowanych wspolrzednych y"	
+dna_len = cveclen(tm1-tm2)
+puts "Dlugosc DNA: %.3f" % dna_len
+y_cor={}
+atoms3.each do |serial,xyz|
+	y_cor[serial] = xyz[1,0]/dna_len*2 	# bo po translacji srodka do 0,0,0 - pol w dol, pol w gore
+end
+#puts y_cor.values.max
+#puts y_cor.values.min
+#puts y_cor.values[0,20]
 
-	s.updateatoms(atoms4)
-	s.sv(options[:o])
+#puts "Oblicznie globalnej macierzy obrotu wokol y"
+#m_rot_y=rotmatrix(yaxis, options[:a]*Math::PI/180.0)
+#puts m_rot_y
+#puts "macierz obrotu Y"
 
-	exit
+#puts "Obrot wokol y"
+#atoms4={}
+#atoms3.each do |serial,xyz|
+#	atoms4[serial] = m_rot_y*xyz
+#end
+
+
+ang=options[:a]
+puts "Rozkrecanie proporcjonalnie do y_cor, laczny kat: %.3f." % ang
+
+atoms4={}
+atoms3.each do |serial,xyz|
+	m_rot_y=rotmatrix(yaxis, ang*y_cor[serial]*Math::PI/180.0)
+	atoms4[serial] = m_rot_y*xyz
 end
 
-
-	
-#rotacja o zadany kat - inny dla kazdego atomu
-
-# wyznaczanie osi obrotu (cross-product, chcemy obrocic sie na os y)
-# wyznaczanie kata obrotu (dot-product)
-
-
-s.updateatoms(atoms2)
+s.updateatoms(atoms4)
 s.sv(options[:o])
 
 exit
